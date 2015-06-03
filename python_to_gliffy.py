@@ -10,12 +10,15 @@ from copy import deepcopy
 
 
 def get_classes(core_modules, prefix):
-    """" class name: list of methods """
+    """" Return {class name: {attrs=[list of attrs], methods=[list of methods]}
+    """
     classes = {}  # class: list of functions
     for core_module in core_modules:
         classes_presentation = pyclbr.readmodule(prefix + core_module)
         for cls, cls_obj in classes_presentation.items():
-            classes[cls] = sorted(list(cls_obj.methods.keys()))
+            classes[cls] = {}
+            classes[cls]['methods'] = sorted(list(cls_obj.methods.keys()))
+            classes[cls]['attrs'] = []  # TODO: get attributes
     return classes
 
 
@@ -102,12 +105,23 @@ class ClassFactory():
         cls['x'] = 100 + self.cls_counter * 200
         self.cls_counter += 1
         self.generated_classes.append(cls)
-    
-    def write(self, filename):
+
+    def add_classes(self, classes):
+        """ Classes from get_classes. """
+        for cls in sorted(list(classes.keys())):
+            self.add_class(cls, classes[cls]['attrs'], classes[cls]['methods'])
+
+
+    def produce_gliffy(self):
+        """ Return full json string. """
         output = deepcopy(self.reference_json)
         output['stage']['objects'] = self.generated_classes
+        return json.dumps(output)
+
+    def write(self, filename):
+        """ Write gliffy to file. It will be overwrited. """
         with open(filename, 'w') as outfile:
-            json.dump(output, outfile)
+            outfile.write(self.produce_gliffy())
     
 
 if __name__ == '__main__':
