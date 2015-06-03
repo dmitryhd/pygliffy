@@ -21,7 +21,7 @@ class TestGliffy(unittest.TestCase):
     # test for multiple python files
     def test_get_classes(self):
         """ TestGliffy: test get classes without attrs from one file. """
-        classes = pg.ProjectParser('example_data').get_classes()
+        classes = pg.ProjectParser('data').get_classes()
         expected = {'Class1': {'attrs': [], 'methods': ['+ m1()']},
                     'Class2': {'attrs': [], 'methods': []}}
         self.assertEqual(classes, expected)
@@ -32,7 +32,7 @@ class TestGliffy(unittest.TestCase):
         factory.add_classes(self.classes)
         gliffy = factory.produce_gliffy()
         gliffy_dict = json.loads(gliffy)
-        with open('example_data/expected_output_test.json') as exp_file:
+        with open('data/expected_output_test.json') as exp_file:
             expected = exp_file.read()
             expected_dict = json.loads(expected)
         self.assertDictEqual(gliffy_dict, expected_dict)
