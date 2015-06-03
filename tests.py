@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 
+import os
+import sys
 import unittest
 import json
 
-import python_to_gliffy as pg
+import pygliffy as pg
 
 
 class TestGliffy(unittest.TestCase):
     """ Tets get classes and produce gliffy file. """
+
+    def setUp(self):
+        self.classes = {'Class1': {'attrs': ['attr1'], 'methods': ['m1', 'm2']},
+                        'Class2': {'attrs': [], 'methods': []}}
 
     # test for multiple python files
     def test_get_classes(self):
@@ -21,16 +27,34 @@ class TestGliffy(unittest.TestCase):
 
     def test_produce_gliffy(self):
         """ TestGliffy: test produce valid json for gliffy. Regression test."""
-        classes = {'Class1': {'attrs': ['attr1'], 'methods': ['m1', 'm2']},
-                   'Class2': {'attrs': [], 'methods': []}}
         factory = pg.ClassFactory()
-        factory.add_classes(classes)
+        factory.add_classes(self.classes)
         gliffy = factory.produce_gliffy()
         gliffy_dict = json.loads(gliffy)
         with open('example_data/expected_output_test.json') as exp_file:
             expected = exp_file.read()
             expected_dict = json.loads(expected)
         self.assertDictEqual(gliffy_dict, expected_dict)
+
+    def test_write_gliffy(self):
+        """ TestGliffy: write tmp file. """
+        factory = pg.ClassFactory()
+        factory.add_classes(self.classes)
+        factory.write('/tmp/gliffy_tmp.json')
+
+    def test_command_line(self):
+        """ TestGliffy: test command line. """
+        sys.argv = ['gliffy', '-v']
+        with self.assertRaises(SystemExit):
+            pg.main()
+        sys.argv = ['gliffy']
+        pg.main()
+        self.assertTrue(os.path.isfile('/tmp/gliffy.json'))
+        sys.argv = ['gliffy', '-o', '/tmp/gliffy_1.json']
+        pg.main()
+        self.assertTrue(os.path.isfile('/tmp/gliffy_1.json'))
+
+
 
 
 if __name__ == '__main__':
