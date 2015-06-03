@@ -18,59 +18,86 @@ logging.basicConfig(level=logging.DEBUG)
 
 __version__ = '0.1rc'
 
+reference_json = {'embeddedResources': {'resources': [], 'index': 0}, 'metadata': {'revision': 0, 'title': 'untitled', 'exportBorder': False}, 'contentType': 'application/gliffy+json', 'version': '1.1', 'stage': {'height': 255, 'gridOn': True, 'shapeStyles': {}, 'snapToGrid': True, 'printPortrait': True, 'exportBorder': False, 'maxHeight': 5000, 'background': '#FFFFFF', 'themeData': None, 'textStyles': {}, 'width': 632, 'nodeIndex': 14, 'printShrinkToFit': False, 'autoFit': True, 'lineStyles': {}, 'printPaper': 'LETTER', 'drawingGuidesOn': True, 'objects': [{'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 2, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: center;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 1, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 2}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 4, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 3, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 1, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 4}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 6, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 5, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 0}, {'magnitude': -1, 'id': 1}, {'magnitude': -1, 'id': 3}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 3, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 0, 'y': 180, 'x': 290, 'order': 0, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 1}, {'magnitude': 1, 'id': 3}, {'magnitude': 1, 'id': 6}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 9, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:center;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 8, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 9}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 11, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 10, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 8, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 11}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 13, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 12, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 7}, {'magnitude': -1, 'id': 8}, {'magnitude': -1, 'id': 10}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 10, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 7, 'y': 180, 'x': 490, 'order': 13, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 8}, {'magnitude': 1, 'id': 10}, {'magnitude': 1, 'id': 13}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}], 'printGridOn': False, 'maxWidth': 5000, 'pageBreaksOn': False}}
 
-def do_skip_dir(dirname):
-    """ Do we need to skip this dir. """
-    exclude_dirs = ['ropeproject', 'tests']
-    skipdir = False
-    for excl_dir in exclude_dirs:
-        if re.search(excl_dir, dirname):
-            skipdir = True
-            break
-    return skipdir
+class ProjectParser(object):
+    """ ProjectParser: . """
+    def __init__(self, proj_dir):
+        self.exclude_dirs = ['ropeproject', 'tests']
+        self.proj_dir = proj_dir
 
-def python_files(proj_dir):
-    """ Generator for getting python files. """
-    for dirpath, _, files in os.walk(proj_dir):
-        if do_skip_dir(dirpath):
-            continue
-        for fname in files:
-            if re.search(r'\.py$', fname) and not re.search(r'setup\.py',
-                                                            fname):
-                yield os.path.abspath(os.path.join(dirpath, fname))
+    def get_classes(self):
+        """ Get all classes from project. """
+        sys.path.append(self.proj_dir)
+        all_classes = {}
+        for fname in self.python_files():
+            logging.info('Processing classes from:' + fname)
+            classes = self.get_classes_from_file(fname)
+            all_classes.update(classes)
+        return all_classes
 
-def get_methods(cls):
-    """ Get methods of class. """
-    return [i for i in cls.__dict__.keys() if i[:2] != '__' and
-            inspect.isfunction(cls.__dict__[i])]
+    def python_files(self):
+        """ Generator for getting python files. """
+        for dirpath, _, files in os.walk(self.proj_dir):
+            if self.do_skip_dir(dirpath):
+                continue
+            for fname in files:
+                if re.search(r'\.py$', fname) and not re.search(r'setup\.py',
+                                                                fname):
+                    yield os.path.abspath(os.path.join(dirpath, fname))
 
-def get_attrs(cls):
-    """ Get attrs of class. """
-    return [i for i in cls.__dict__.keys() if i[:2] != '__' and not
-            inspect.isfunction(cls.__dict__[i])]
+    def do_skip_dir(self, dirname):
+        """ Do we need to skip this dir. """
+        skipdir = False
+        for excl_dir in self.exclude_dirs:
+            if re.search(excl_dir, dirname):
+                skipdir = True
+                break
+        return skipdir
 
-def get_classes_from_file(fname):
-    """ Return dict of classes from given file """
-    classes = {}
-    try:
-        module = imp.load_source(fname, fname)
-    except:
+    @staticmethod
+    def get_methods(cls_):
+        """ Get methods of class. """
+        res = []
+        for func_name, func in cls_.__dict__.items():
+            if func_name[:2] != '__' and inspect.isfunction(func):
+                argnames = [argname for argname in func.__code__.co_varnames
+                            if argname != 'self']
+                res.append('+ {}({})'.format(func_name, ', '.join(argnames)))
+        return res
+
+    @staticmethod
+    def get_attrs(cls_):
+        """ Get attrs of class. """
+        basic = [i for i in cls_.__dict__.keys() if i[:2] != '__' and not
+                 inspect.isfunction(cls_.__dict__[i])]
+        try:
+            init_lines = inspect.getsourcelines(cls_.__dict__['__init__'])
+        except (KeyError, OSError):
+            init_lines = []
+        for inits in init_lines:
+            if not isinstance(inits, list):
+                continue
+            for line in inits:
+                if line:
+                    par_name = re.findall(r'self\.(.+)\s=', line)
+                    if par_name: 
+                        print(par_name[0])
+                        basic.append(par_name[0])
+        return basic
+
+    def get_classes_from_file(self, fname):
+        """ Return dict of classes from given file """
+        classes = {}
+        try:
+            module = imp.load_source(fname, fname)
+        except:
+            return classes
+        for clsname, cls in inspect.getmembers(module, inspect.isclass):
+            if cls.__module__ == fname:
+                classes[clsname] = {'attrs': self.get_attrs(cls),
+                                    'methods': self.get_methods(cls)}
         return classes
-    for clsname, cls in inspect.getmembers(module, inspect.isclass):
-        if cls.__module__ == fname:
-            classes[clsname] = {'attrs': get_attrs(cls),
-                                'methods': get_methods(cls)}
-    return classes
-
-def get_classes(proj_dir):
-    """ Get all classes from project. """
-    sys.path.append(proj_dir)
-    all_classes = {}
-    for fname in python_files(proj_dir):
-        logging.info('Processing classes from:' + fname)
-        classes = get_classes_from_file(fname)
-        all_classes.update(classes)
-    return all_classes
 
 
 class ClassFactory():
@@ -82,8 +109,7 @@ class ClassFactory():
     """
     def __init__(self):
         self.cls_counter = 0
-        with open('example_data/2classes.json') as doc:
-            self.reference_json = json.load(doc)
+        self.reference_json = reference_json
         self.class_template = self.reference_json['stage']['objects'][0]
         self.generated_classes = []
         self.header_html = (
@@ -98,6 +124,7 @@ class ClassFactory():
             'style="font-family: Arial; font-size: 12px; font-weight: normal; '
             'text-decoration: none; line-height: 14px; color: rgb(0, 0, '
             '0);">{}\n</span></p>')
+        self.horiz_spacing = 150
 
     def add_classes(self, classes):
         """ Classes from get_classes. """
@@ -182,7 +209,7 @@ class ClassFactory():
         methods_id = cls['children'][2]['children'][0]['graphic']['Text']
         methods_id['html'] = methods_html
 
-        cls['x'] = 100 + self.cls_counter * 200
+        cls['x'] = 20 + self.cls_counter * self.horiz_spacing
         self.cls_counter += 1
         self.generated_classes.append(cls)
 
@@ -214,7 +241,7 @@ def main():
     # 'collector',  'context',  'database',  'devices',  'download',
     # 'emergency_checker',  'nodes_test',  'parameters',  'power_control']
     args = parse_args()
-    classes = get_classes(args.project_directory)
+    classes = ProjectParser(args.project_directory).get_classes()
     factory = ClassFactory()
     factory.add_classes(classes)
     factory.write(args.output_file)
@@ -222,3 +249,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

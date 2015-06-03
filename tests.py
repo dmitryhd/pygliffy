@@ -14,14 +14,15 @@ class TestGliffy(unittest.TestCase):
     """ Tets get classes and produce gliffy file. """
 
     def setUp(self):
-        self.classes = {'Class1': {'attrs': ['attr1'], 'methods': ['m1', 'm2']},
+        self.classes = {'Class1': {'attrs': ['attr1'],
+                                   'methods': ['+ m1()', '+ m2()']},
                         'Class2': {'attrs': [], 'methods': []}}
 
     # test for multiple python files
     def test_get_classes(self):
         """ TestGliffy: test get classes without attrs from one file. """
-        classes = pg.get_classes('example_data')
-        expected = {'Class1': {'attrs': [], 'methods': ['m1']},
+        classes = pg.ProjectParser('example_data').get_classes()
+        expected = {'Class1': {'attrs': [], 'methods': ['+ m1()']},
                     'Class2': {'attrs': [], 'methods': []}}
         self.assertEqual(classes, expected)
 
