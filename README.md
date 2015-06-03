@@ -13,4 +13,4 @@ Currently it can only give out class diagram in json format, compatible with Gli
 
 #Example
 
-![Alt text](/example_data/class.diagram.example.png?raw=true "UML class diagram example")
+![Alt text](/data/class.diagram.example.png?raw=true "UML class diagram example")
