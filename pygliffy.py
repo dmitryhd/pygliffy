@@ -2,7 +2,6 @@
 
 """ Python print uml diagram to Gliffy. """
 
-import pyclbr
 import imp
 import inspect
 import os
@@ -15,11 +14,13 @@ import sys
 sys.path.append('.')
 import logging
 
+logging.basicConfig(level=logging.DEBUG)
+
 __version__ = '0.1rc'
 
-proj_dir = os.path.expanduser('/home/dimert/repos/vacancy_analysis/')
 
 def do_skip_dir(dirname):
+    """ Do we need to skip this dir. """
     exclude_dirs = ['ropeproject', 'tests']
     skipdir = False
     for excl_dir in exclude_dirs:
@@ -29,50 +30,44 @@ def do_skip_dir(dirname):
     return skipdir
 
 def python_files(proj_dir):
+    """ Generator for getting python files. """
     for dirpath, _, files in os.walk(proj_dir):
         if do_skip_dir(dirpath):
             continue
         for fname in files:
-            if re.search(r'\.py$', fname):
+            if re.search(r'\.py$', fname) and not re.search(r'setup\.py',
+                                                            fname):
                 yield os.path.abspath(os.path.join(dirpath, fname))
 
-            
+def get_methods(cls):
+    """ Get methods of class. """
+    return [i for i in cls.__dict__.keys() if i[:2] != '__' and
+            inspect.isfunction(cls.__dict__[i])]
 
-def do_skip_dir(dirname):
-    exclude_dirs = ['ropeproject', 'tests']
-    skipdir = False
-    for excl_dir in exclude_dirs:
-        if re.search(excl_dir, dirname):
-            skipdir = True
-            break
-    return skipdir
-
-def python_files(proj_dir):
-    for dirpath, _, files in os.walk(proj_dir):
-        if do_skip_dir(dirpath):
-            continue
-        for fname in files:
-            if re.search(r'\.py$', fname) and not re.search(r'setup\.py', fname):
-                yield os.path.abspath(os.path.join(dirpath, fname))
-                
-def get_methods(cls):   
-  return [i for i in cls.__dict__.keys() if i[:2] != '__' and inspect.isfunction(cls.__dict__[i])]
-
-def get_attrs(cls):   
-  return [i for i in cls.__dict__.keys() if i[:2] != '__' and not inspect.isfunction(cls.__dict__[i])]
+def get_attrs(cls):
+    """ Get attrs of class. """
+    return [i for i in cls.__dict__.keys() if i[:2] != '__' and not
+            inspect.isfunction(cls.__dict__[i])]
 
 def get_classes_from_file(fname):
+    """ Return dict of classes from given file """
     classes = {}
-    module = imp.load_source('', fname)
+    try:
+        module = imp.load_source(fname, fname)
+    except:
+        return classes
     for clsname, cls in inspect.getmembers(module, inspect.isclass):
-        classes[clsname] = {'attrs': get_attrs(cls), 'methods': get_methods(cls)}
+        if cls.__module__ == fname:
+            classes[clsname] = {'attrs': get_attrs(cls),
+                                'methods': get_methods(cls)}
     return classes
 
 def get_classes(proj_dir):
+    """ Get all classes from project. """
     sys.path.append(proj_dir)
     all_classes = {}
     for fname in python_files(proj_dir):
-        print(fname)
+        logging.info('Processing classes from:' + fname)
         classes = get_classes_from_file(fname)
         all_classes.update(classes)
     return all_classes
@@ -160,6 +155,9 @@ class ClassFactory():
         # class id 2 = 0
         constr = child['constraints']['constraints']
         constr[1]['PositionConstraint']['nodeId'] = current_id + 3
+        constr[0]['HeightConstraint']['heightInfo'][0]['id'] = current_id + 0
+        constr[0]['HeightConstraint']['heightInfo'][1]['id'] = current_id + 1
+        constr[0]['HeightConstraint']['heightInfo'][2]['id'] = current_id + 3
 
 
         #all ids
@@ -205,6 +203,8 @@ def parse_args():
     if args.version:
         print('Version: ', __version__)
         sys.exit(0)
+
+
     return args
 
 
