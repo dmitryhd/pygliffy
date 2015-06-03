@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+""" Test module for PyGliffy. """
+
 import os
 import sys
 import unittest
@@ -18,9 +20,7 @@ class TestGliffy(unittest.TestCase):
     # test for multiple python files
     def test_get_classes(self):
         """ TestGliffy: test get classes without attrs from one file. """
-        core_modules = ['python_classes']
-        prefix = 'example_data.'
-        classes = pg.get_classes(core_modules, prefix)
+        classes = pg.get_classes('example_data')
         expected = {'Class1': {'attrs': [], 'methods': ['m1']},
                     'Class2': {'attrs': [], 'methods': []}}
         self.assertEqual(classes, expected)

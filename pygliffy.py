@@ -3,27 +3,79 @@
 """ Python print uml diagram to Gliffy. """
 
 import pyclbr
+import imp
+import inspect
+import os
+import re
 import json
 import argparse
 from copy import deepcopy
 
 import sys
 sys.path.append('.')
+import logging
 
-__version__ = '0.1'
+__version__ = '0.1rc'
 
+proj_dir = os.path.expanduser('/home/dimert/repos/vacancy_analysis/')
 
-def get_classes(core_modules, prefix):
-    """" Return {class name: {attrs=[list of attrs], methods=[list of methods]}
-    """
-    classes = {}  # class: list of functions
-    for core_module in core_modules:
-        classes_presentation = pyclbr.readmodule(prefix + core_module)
-        for cls, cls_obj in classes_presentation.items():
-            classes[cls] = {}
-            classes[cls]['methods'] = sorted(list(cls_obj.methods.keys()))
-            classes[cls]['attrs'] = []  # TODO: get attributes
+def do_skip_dir(dirname):
+    exclude_dirs = ['ropeproject', 'tests']
+    skipdir = False
+    for excl_dir in exclude_dirs:
+        if re.search(excl_dir, dirname):
+            skipdir = True
+            break
+    return skipdir
+
+def python_files(proj_dir):
+    for dirpath, _, files in os.walk(proj_dir):
+        if do_skip_dir(dirpath):
+            continue
+        for fname in files:
+            if re.search(r'\.py$', fname):
+                yield os.path.abspath(os.path.join(dirpath, fname))
+
+            
+
+def do_skip_dir(dirname):
+    exclude_dirs = ['ropeproject', 'tests']
+    skipdir = False
+    for excl_dir in exclude_dirs:
+        if re.search(excl_dir, dirname):
+            skipdir = True
+            break
+    return skipdir
+
+def python_files(proj_dir):
+    for dirpath, _, files in os.walk(proj_dir):
+        if do_skip_dir(dirpath):
+            continue
+        for fname in files:
+            if re.search(r'\.py$', fname) and not re.search(r'setup\.py', fname):
+                yield os.path.abspath(os.path.join(dirpath, fname))
+                
+def get_methods(cls):   
+  return [i for i in cls.__dict__.keys() if i[:2] != '__' and inspect.isfunction(cls.__dict__[i])]
+
+def get_attrs(cls):   
+  return [i for i in cls.__dict__.keys() if i[:2] != '__' and not inspect.isfunction(cls.__dict__[i])]
+
+def get_classes_from_file(fname):
+    classes = {}
+    module = imp.load_source('', fname)
+    for clsname, cls in inspect.getmembers(module, inspect.isclass):
+        classes[clsname] = {'attrs': get_attrs(cls), 'methods': get_methods(cls)}
     return classes
+
+def get_classes(proj_dir):
+    sys.path.append(proj_dir)
+    all_classes = {}
+    for fname in python_files(proj_dir):
+        print(fname)
+        classes = get_classes_from_file(fname)
+        all_classes.update(classes)
+    return all_classes
 
 
 class ClassFactory():
@@ -61,6 +113,7 @@ class ClassFactory():
         """ Write gliffy to file. It will be overwrited. """
         with open(filename, 'w') as outfile:
             outfile.write(self.produce_gliffy())
+            logging.warning('Wrote to file: ' + filename)
 
     def produce_gliffy(self):
         """ Return full json string. """
@@ -136,7 +189,6 @@ class ClassFactory():
         self.generated_classes.append(cls)
 
 
-
 def parse_args():
     """ Process command line arguments. """
     parser = argparse.ArgumentParser()
@@ -146,6 +198,9 @@ def parse_args():
     parser.add_argument("-o", "--output_file", type=str,
                         default='/tmp/gliffy.json',
                         help="Output file")
+    parser.add_argument("-p", "--project_directory", type=str,
+                        default='.',
+                        help="Path to project to analyse.")
     args = parser.parse_args()
     if args.version:
         print('Version: ', __version__)
@@ -159,9 +214,7 @@ def main():
     # 'collector',  'context',  'database',  'devices',  'download',
     # 'emergency_checker',  'nodes_test',  'parameters',  'power_control']
     args = parse_args()
-    core_modules = ['python_classes']
-    prefix = 'example_data.'
-    classes = get_classes(core_modules, prefix)
+    classes = get_classes(args.project_directory)
     factory = ClassFactory()
     factory.add_classes(classes)
     factory.write(args.output_file)
