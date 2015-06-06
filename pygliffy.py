@@ -9,6 +9,7 @@ import re
 import json
 import argparse
 from copy import deepcopy
+from collections import OrderedDict
 
 import sys
 import logging
@@ -16,9 +17,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 __version__ = '0.2'
-
-# This is example of Gliffy output.
-REFERENCE = {'embeddedResources': {'resources': [], 'index': 0}, 'metadata': {'revision': 0, 'title': 'untitled', 'exportBorder': False}, 'contentType': 'application/gliffy+json', 'version': '1.1', 'stage': {'height': 255, 'gridOn': True, 'shapeStyles': {}, 'snapToGrid': True, 'printPortrait': True, 'exportBorder': False, 'maxHeight': 5000, 'background': '#FFFFFF', 'themeData': None, 'textStyles': {}, 'width': 632, 'nodeIndex': 14, 'printShrinkToFit': False, 'autoFit': True, 'lineStyles': {}, 'printPaper': 'LETTER', 'drawingGuidesOn': True, 'objects': [{'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 2, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: center;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 1, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 2}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 4, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 3, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 1, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 4}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 6, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 5, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 0}, {'magnitude': -1, 'id': 1}, {'magnitude': -1, 'id': 3}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 3, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 0, 'y': 180, 'x': 290, 'order': 0, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 1}, {'magnitude': 1, 'id': 3}, {'magnitude': 1, 'id': 6}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 9, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:center;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 8, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 9}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 11, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 10, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 8, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 11}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 13, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 12, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 7}, {'magnitude': -1, 'id': 8}, {'magnitude': -1, 'id': 10}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 10, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 7, 'y': 180, 'x': 490, 'order': 13, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 8}, {'magnitude': 1, 'id': 10}, {'magnitude': 1, 'id': 13}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}], 'printGridOn': False, 'maxWidth': 5000, 'pageBreaksOn': False}}
 
 
 class ProjectParser(object):
@@ -32,7 +30,7 @@ class ProjectParser(object):
     def get_classes(self):
         """ Get all classes from project. """
         sys.path.append(self.proj_dir)
-        all_classes = {}
+        all_classes = OrderedDict()
         for fname in self.python_files():
             logging.info('Processing classes from:' + fname)
             classes = self.get_classes_from_file(fname)
@@ -85,13 +83,12 @@ class ProjectParser(object):
                 if line:
                     par_name = re.findall(r'self\.(.+)\s=', line)
                     if par_name:
-                        print(par_name[0])
                         basic.append(par_name[0])
         return basic
 
     def get_classes_from_file(self, fname):
         """ Return dict of classes from given file """
-        classes = {}
+        classes = OrderedDict()
         try:
             module = imp.load_source(fname, fname)
         except:  # TODO: Yes, i know, this is bad. Need to specify exceptions.
@@ -101,6 +98,9 @@ class ProjectParser(object):
                 classes[clsname] = {'attrs': self.get_attrs(cls),
                                     'methods': self.get_methods(cls)}
         return classes
+
+# This is example of Gliffy output.
+REFERENCE = {'embeddedResources': {'resources': [], 'index': 0}, 'metadata': {'revision': 0, 'title': 'untitled', 'exportBorder': False}, 'contentType': 'application/gliffy+json', 'version': '1.1', 'stage': {'height': 255, 'gridOn': True, 'shapeStyles': {}, 'snapToGrid': True, 'printPortrait': True, 'exportBorder': False, 'maxHeight': 5000, 'background': '#FFFFFF', 'themeData': None, 'textStyles': {}, 'width': 632, 'nodeIndex': 14, 'printShrinkToFit': False, 'autoFit': True, 'lineStyles': {}, 'printPaper': 'LETTER', 'drawingGuidesOn': True, 'objects': [{'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 2, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: center;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 1, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 2}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 4, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 3, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 1, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 4}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 6, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align: left;"><span class="gliffy-placeholder-text" style="font-family: Arial; font-size: 12px; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 5, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 0}, {'magnitude': -1, 'id': 1}, {'magnitude': -1, 'id': 3}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 3, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 0, 'y': 180, 'x': 290, 'order': 0, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 1}, {'magnitude': 1, 'id': 3}, {'magnitude': 1, 'id': 6}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 75, 'lockShape': False, 'uid': 'com.gliffy.shape.uml.uml_v1.default.class', 'width': 140, 'linkMap': [], 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 9, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:center;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: bold; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">newClassName2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 8, 'y': 0, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 9}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 11, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Attribute2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 10, 'y': 18, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 8, 'px': 0, 'py': 1}}, {'HeightConstraint': {'growParent': True, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 11}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}, {'height': 39, 'lockShape': False, 'uid': None, 'width': 140, 'children': [{'height': 18, 'lockShape': False, 'uid': None, 'width': 140, 'children': None, 'id': 13, 'lockAspectRatio': False, 'order': 'auto', 'graphic': {'type': 'Text', 'Text': {'valign': 'top', 'paddingTop': 2, 'paddingBottom': 2, 'hposition': 'none', 'paddingRight': 2, 'html': '<p style="text-align:left;"><span style="font-size: 12px; font-family: Arial; white-space: pre-wrap; font-weight: normal; text-decoration: none; line-height: 14px; color: rgb(0, 0, 0);">Method2</span></p>', 'overflow': 'none', 'paddingLeft': 2, 'tid': None, 'vposition': 'none'}}, 'rotation': 0, 'y': 0, 'x': 0}], 'id': 12, 'y': 36, 'x': 0, 'order': 'auto', 'graphic': {'Shape': {'gradient': False, 'strokeWidth': 2, 'dropShadow': True, 'shadowX': 4, 'fillColor': '#FFFFFF', 'state': 0, 'shadowY': 4, 'tid': 'com.gliffy.stencil.rectangle.basic_v1', 'opacity': 1, 'strokeColor': '#000000'}, 'type': 'Shape'}, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': False, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 7}, {'magnitude': -1, 'id': 8}, {'magnitude': -1, 'id': 10}]}, 'type': 'HeightConstraint'}, {'type': 'PositionConstraint', 'PositionConstraint': {'nodeId': 10, 'px': 0, 'py': 1}}]}, 'lockAspectRatio': False}], 'id': 7, 'y': 180, 'x': 490, 'order': 13, 'graphic': None, 'rotation': 0, 'constraints': {'constraints': [{'HeightConstraint': {'growParent': False, 'isMin': True, 'padding': 0, 'heightInfo': [{'magnitude': 1, 'id': 8}, {'magnitude': 1, 'id': 10}, {'magnitude': 1, 'id': 13}]}, 'type': 'HeightConstraint'}]}, 'lockAspectRatio': False}], 'printGridOn': False, 'maxWidth': 5000, 'pageBreaksOn': False}}
 
 
 class ClassFactory():
@@ -115,6 +115,7 @@ class ClassFactory():
         self.reference_json = REFERENCE
         self.class_template = self.reference_json['stage']['objects'][0]
         self.generated_classes = []
+        self.max_width = 10**4
         self.header_html = (
             '<p style="text-align: center;">'
             '<span class="gliffy-placeholder-text"'
@@ -127,11 +128,12 @@ class ClassFactory():
             'style="font-family: Arial; font-size: 12px; font-weight: normal; '
             'text-decoration: none; line-height: 14px; color: rgb(0, 0, '
             '0);">{}\n</span></p>')
-        self.horiz_spacing = 150
+        self.horiz_spacing = 20
+        self.next_x = 0
 
     def add_classes(self, classes):
         """ Classes from get_classes. """
-        for cls in sorted(list(classes.keys())):
+        for cls in classes:
             self.add_class(cls, classes[cls]['attrs'], classes[cls]['methods'])
 
     def write(self, filename):
@@ -144,17 +146,27 @@ class ClassFactory():
         """ Return full json string. """
         output = deepcopy(self.reference_json)
         output['stage']['objects'] = self.generated_classes
+        output['stage']['nodeIndex'] = self.cls_counter * 7 + 1
+        output['stage']['maxWidth'] = self.max_width
         return json.dumps(output)
 
     def add_class(self, name, attrs, methods):
         """ Add single class to inner presentation of json. """
         # TODO: split to several methods.
         cls = deepcopy(self.class_template)
+
+        # set width
+        cls['y'] = 20
+        cls['width'] = self.get_class_width(name, attrs, methods)
+        cls['x'] = self.next_x
+
+        self.next_x += self.horiz_spacing + cls['width']
         current_id = self.cls_counter * 7
         # class self id 3 = 0
         cls['id'] = current_id
         #### Class
         child = cls['children'][0]
+        child['width'] = cls['width']
         # id = 1
         child['id'] = current_id + 1
         #class_id 1 = 2
@@ -165,6 +177,7 @@ class ClassFactory():
 
         #### Attr
         child = cls['children'][1]
+        child['width'] = cls['width']
         # id = 3
         child['id'] = current_id + 3
         #class_id 1 = 4
@@ -176,6 +189,7 @@ class ClassFactory():
 
         #### Methods
         child = cls['children'][2]
+        child['width'] = cls['width']
         # id = 5
         child['id'] = current_id + 5
 
@@ -198,23 +212,43 @@ class ClassFactory():
 
         class_name_html = self.header_html.format(name)
         class_name_id = cls['children'][0]['children'][0]['graphic']['Text']
+        cls['children'][0]['children'][0]['width'] = cls['width']
         class_name_id['html'] = class_name_html
 
         attr_html = ''
         for attr in attrs:
             attr_html += self.common_html.format(attr)
         attrs_id = cls['children'][1]['children'][0]['graphic']['Text']
+        cls['children'][1]['children'][0]['width'] = cls['width']
         attrs_id['html'] = attr_html
 
         methods_html = ''
         for method in methods:
             methods_html += self.common_html.format(method)
         methods_id = cls['children'][2]['children'][0]['graphic']['Text']
+        cls['children'][2]['children'][0]['width'] = cls['width']
         methods_id['html'] = methods_html
 
-        cls['x'] = 20 + self.cls_counter * self.horiz_spacing
         self.cls_counter += 1
         self.generated_classes.append(cls)
+
+    @staticmethod
+    def get_class_width(class_name, attrs, methods):
+        """ Return approx width in pixels """
+        max_len = len(class_name)
+        for attr in attrs:
+            if max_len < len(attr):
+                max_len = len(attr)
+        for method in methods:
+            if max_len < len(method):
+                max_len = len(method)
+        
+        max_class_witdh = 250
+        if max_class_witdh > max_len * 7:
+            class_width = max_len * 7
+        else:
+            class_width = max_class_witdh
+        return class_width
 
 
 def parse_args():

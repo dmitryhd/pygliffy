@@ -6,8 +6,10 @@ import os
 import sys
 import unittest
 import json
+from collections import OrderedDict
 
 import pygliffy as pg
+
 
 
 class TestGliffy(unittest.TestCase):
@@ -26,15 +28,25 @@ class TestGliffy(unittest.TestCase):
                     'Class2': {'attrs': [], 'methods': []}}
         self.assertEqual(classes, expected)
 
+    def test_get_class_width(self):
+        """ TestGliffy: test get class width. """
+        factory = pg.ClassFactory()
+        self.assertEqual(factory.get_class_width('a', ['b'], ['c']), 7)
+        self.assertEqual(factory.get_class_width(
+            '0123456789012345678901234567890', ['b'], ['c']), 217)
+        self.assertEqual(factory.get_class_width(
+            '012345678901234567890123456789012345678910', ['b'], ['c']), 250)
+
     def test_produce_gliffy(self):
         """ TestGliffy: test produce valid json for gliffy. Regression test."""
         factory = pg.ClassFactory()
         factory.add_classes(self.classes)
         gliffy = factory.produce_gliffy()
         gliffy_dict = json.loads(gliffy)
+        #factory.write('data/expected_output_test.json')
         with open('data/expected_output_test.json') as exp_file:
             expected = exp_file.read()
-            expected_dict = json.loads(expected)
+            expected_dict = json.loads(expected, object_pairs_hook=OrderedDict)
         self.assertDictEqual(gliffy_dict, expected_dict)
 
     def test_write_gliffy(self):
